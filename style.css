@@ -1,0 +1,47 @@
+* {
+  color: white;
+  background-color: #36393f;
+}
+
+h1 {
+  text-align: center;
+}
+
+.two__parts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#sub__button {
+  background-color: rgb(3, 58, 152);
+  padding: 5px 0;
+}
+
+input {
+  background-color: white;
+  padding: 10px 20px;
+  width: 350px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+#message__field {
+  display: flex;
+  flex-direction: column;
+}
+
+table,
+th,
+td {
+  border: 1px solid white;
+}
+
+th,
+td {
+  padding: 10px;
+}
+
+.danger__btn {
+  background-color: red;
+}

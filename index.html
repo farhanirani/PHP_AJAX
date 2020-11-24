@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <title>AJAX MESSAGING</title>
+  </head>
+  <body>
+    <br />
+    <h1>AJAX MESSAGING</h1>
+    <br />
+    <div class="two__parts">
+      <form action="">
+        <h3 style="text-align: center">SEND MESSAGE</h3>
+        <div id="message__field">
+          <input id="sender__name" placeholder="Sender name" type="text" />
+          <input id="msg__body" placeholder="Message" type="text" />
+          <button type="submit" id="sub__button">Send</button>
+        </div>
+      </form>
+      <form action="">
+        <h3 style="text-align: center">ALL MESSAGES</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>m_id</th>
+              <th>Sender name</th>
+              <th style="width: 380px">Message</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </form>
+    </div>
+
+    <script>
+      async function refresh() {
+        let ans = "";
+        $.ajax({
+          url: "retrieve.php",
+          method: "GET",
+          dataType: "json",
+          success: (data) => {
+            // console.log(data);
+            for (let i = 0; i < data.length; i++) {
+              ans +=
+                "<tr><td class='nr'>" +
+                data[i].m_id +
+                "</td><td>" +
+                data[i].sender +
+                "</td><td>" +
+                data[i].message +
+                "</td><td><button type='button' class='danger__btn'>Delete</button></td></tr>";
+            }
+
+            $("#tbody").html(ans);
+          },
+        });
+      }
+
+      $(document).ready(() => {
+        // Retrieve data
+        let ans = "";
+        $.ajax({
+          url: "retrieve.php",
+          method: "GET",
+          dataType: "json",
+          success: (data) => {
+            // console.log(data);
+            for (let i = 0; i < data.length; i++) {
+              ans +=
+                "<tr><td class='nr'>" +
+                data[i].m_id +
+                "</td><td>" +
+                data[i].sender +
+                "</td><td>" +
+                data[i].message +
+                "</td><td><button type='button' class='danger__btn'>Delete</button></td></tr>";
+            }
+
+            $("#tbody").html(ans);
+          },
+        });
+
+        // Insert data
+        $("#sub__button").click((e) => {
+          e.preventDefault();
+          let name = $("#sender__name").val();
+          let msg = $("#msg__body").val();
+          querydata = { message: msg, sender: name };
+
+          $.ajax({
+            url: "insert.php",
+            method: "POST",
+            data: JSON.stringify(querydata),
+            success: (data) => {
+              console.log(data);
+              $("#msg__body").val("");
+              $("#sender__name").val("");
+              refresh();
+            },
+          });
+        });
+      });
+
+      // Delete message
+      $(document).ajaxComplete((e) => {
+        e.preventDefault();
+        $(".danger__btn").click(function () {
+          var row = $(this).closest("tr"); // Find the row
+          var id = row.find(".nr").text(); // Find the text
+
+          $.ajax({
+            url: "delete.php",
+            method: "POST",
+            data: JSON.stringify(id),
+            success: (data) => {
+              console.log(data);
+              refresh();
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
